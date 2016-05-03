@@ -1,0 +1,332 @@
+// Brian Witte
+// Project three
+
+Button[] buttons;
+String buttonNames[]= {
+  "Up", "Down", "Flock", "Gold", "Reset", "Quit"
+}
+int numButtons= 6;
+
+int score=0;
+String title= "Project monkeying around";
+String author= "Brian Witte";
+String news="";
+int count2;
+boolean debug=false;
+int n;
+float look;
+float birdX, BridY=20;
+float horizon= height/2;
+int step;
+float helpX, helpY;
+int count=0;
+float Ladder;
+int pairs;
+
+float z=1;
+float mX=60, mY=600;
+float x;
+float y= 100;
+float h=height/2;
+float grizzDX;
+float shrink= .80;
+
+void setup() {
+  size(1000, 700);
+  horizon= height/3;
+  count=0;
+  makebuttons();
+}
+
+void makebuttons() {
+  buttons= new Button[numbuttons];
+  float x=150, y=50;
+  for (int j=0; j<m; j++) {
+    buttons[j]= new Button(x, y, buttonNames[j]);
+    y+=50;
+  }
+  buttons[2].r=0;
+  buttons[2].b=255;
+}
+
+void draw() {
+  scene();
+  fill(153, 243, 250, 175);
+    //--sun
+  if (key=='?') {
+    help();
+    return;
+  }
+  buttons();
+  flock(pairs, x, y, w, h);
+  x=x+w/2;
+  clouds();
+  grass();
+  Ladder();
+  bird();
+  monkey(mX, mY, 10);
+  int when=300;
+  if (frameCount%when == 0) {
+    z=-z;
+    if (mY>100) {
+      mY=mY-50;
+    }
+  }
+  if (frameCount%when == 30) {
+    z=-z;
+    if (mY<height-100) {
+      mY=mY + 50;
+    }
+  }
+  if (frameCount%when == 50) {
+    z=-z;
+    if (mY >100) {
+      mY=mY-50;
+    }
+  }
+  if (frameCount%when ==45) {
+    z=-z;
+    if (mY, height-100) {
+      mY=mY+50;
+    }
+  }
+  //Bro();
+  //Goober();
+  //Gold();
+  //Dog();
+  //Puppy();
+}
+/*
+void scene();
+  background( 150, 200, 250 );             // PALE Blue sky
+  
+  
+  fill(0, 255, 0);                         //BRIGHT GREEN LAWN
+  rect(300, 300, 600, 200);
+  
+  fill( 125, 0, 0 );
+  rect( 100, 200, 100, 50 );               // Red-ish house
+  triangle( 50, 175, 100, 100, 150, 175);
+  
+  fill(146, 111, 91);
+  rect(420, 200, 20, 60);                  //Crayola Beaver-Brown Tree trunk?
+  
+  fill(0, 255, 0);
+  ellipse(420, 150, 45, 90);               //Green Evergreen
+  
+  fill(146, 111, 91);
+  rect(520, 200, 40, 60);                  //Crayola Beaver-Brown Tree trunk?
+  
+  fill(0, 255, 0);
+  triangle(480, 140, 520, 40, 560, 140);
+  triangle(480, 150, 520, 50, 560, 150);
+  triangle(480, 160, 520, 60, 560, 160);
+  triangle(480, 170, 520, 70, 560, 170);
+  triangle(480, 180, 520, 80, 560, 180);
+  triangle(480, 190, 520, 90, 560, 190);
+  triangle(480, 200, 520, 100, 560, 200);  //Green Evergreen
+  
+  fill(146, 111, 91);
+  rect(320, 200, 40, 60);                  //Crayola Beaver-Brown Tree trunk?
+  
+  fill(0, 255, 0);
+  triangle(280, 140, 320, 40, 360, 140);
+  triangle(280, 150, 320, 50, 360, 150);
+  triangle(280, 160, 320, 60, 360, 160);
+  triangle(280, 170, 320, 70, 360, 170);
+  triangle(280, 180, 320, 80, 360, 180);
+  triangle(280, 190, 320, 90, 360, 190);
+  triangle(280, 200, 320, 100, 360, 200);  //Green Evergreen
+ */ 
+  fill(0);
+  text( "SCORE=  " + score, width-300, 80 );
+  textSize(18);
+  text( author, width*3/4, height-20 );
+  textSize(12);
+  
+  text( "Monkey goes up and down with 'u' or 'd' keys.", width/5, height-60 );
+  text( "(Press '?' key for further help.)", width/5, height-40 );
+  textSize(18);
+
+}
+void buttons() {
+  for(int j=0; j<buttonNames.length; j++) {
+    buttons[j].show();
+  }
+}
+
+void grass() {
+  float wave= grizzDX>0?10:-10;
+  stroke(355,255,0);
+  strokeWeight(6);
+  for(float x=100, x<width; x+=40) {
+    line(x,height,x+wave, height-40);
+  }
+  strokeWeight(1);
+}
+
+void Ladder() {
+  stroke(20);
+  fill(146, 111, 91);
+  for(int i=0; i<14;i+=1) {
+    rect(20, i*50, 100, 10, 70);
+  }
+  for(int j=0; j<2; j++) {
+    rect(j*100, 0, 20, 1000, 80);
+  }
+}
+void monkey(float x, float y, float xxxsize) {
+  strokeWeight(5);
+  stroke(120,50,10);
+  line( mX, mY, mX-20*z, mY+100);
+  line( mX, mY, mX+20*z, mY+50);
+  line( mX, mY, mX+20*z, mY-100);
+  line( mX, mY, mX-20*z, mY-50);
+  fill(120,50,10);
+  noStroke();
+  ellipseMode(CENTER);
+  ellipse(mX, mY, 40, 80)
+  fill(146, 111, 91);
+  ellipse(mX, mY-40, 30, 30);
+}  
+
+void hero() {
+}
+
+void monster() {
+}
+
+void gold() {
+}
+
+void scoring() {
+}
+
+void reset() {
+  // Start at opposite sides. // 
+  newFlock();
+  //news="";
+}
+void gold() {
+}
+
+void newFlock() {                         // Create a new flock of birds
+  pairs=  int( random(3, 5));
+  x=random(w/2);
+  y=random(40, height/4);
+  w=random(10,30);
+  h=random(10,30);
+}
+
+  //flocks of birds
+void flock(int pairs, float x, float y, float w, float h) {
+  float u=  h;
+  bird(x, y, w, h);
+  
+  
+  for (int loop=0; loop<pairs; loop++) {   //draw birds in pairs for the V.
+    x=  x-3*w;
+    u=  u+h/2;
+    bird(x, y-u, w, h); //up
+    bird(x, y+u, w, h); //down
+  }
+}
+
+void bird(float x, float y, float w, float h) {
+  fill(92, 185, 174);
+  ellipse(birdX, birdY, 30, 20);                                             //// body
+  triangle(birdX-wing1, birdY, birdX+wing1, birdY, birdX+wing2, birdY+flap); //// wing
+  ellipse(birdX+16, birdY, 10, 10);                                          //// head
+  textSize(12);
+}
+void help() {
+  news="";
+  helpX= width/2;
+  helpY=horizon+20 ;
+  textSize(18);
+  fill(212, 7, 240);
+
+  say( "I N S T R U C T I O N S" );
+  say( "" );
+  say( "Bro!!! AKA hero obtains the gold, increase score between 1-200 )." );
+  say( "Goober AKA Monster chases hero" );
+  say( "Click or hit 'r' to move gold to a random position." );
+  say( "r key to reset the position monster, hero and gold, it will be random." );
+  say( "u key to Make the monkey go up." );
+  say( "d key to Make the monkey go down." );
+  say( "q key to quit" );
+}
+
+void mousePressed() {
+  
+  if(buttons[0].click(mouseX,mouseY)){ 
+    up(); 
+    return; 
+  }
+  if(buttons[1].click(mouseX,mouseY)){ 
+    down(); 
+    return; 
+  }
+  if(buttons[2].click(mouseX,mouseY)){ 
+    newFlock(); 
+    return; 
+  }
+  if(buttons[3].click(mouseX,mouseY)){ 
+    gold(); 
+    return; 
+  }
+  if(buttons[4].click(mouseX,mouseY)){ 
+    reset(); 
+    return; 
+  }
+  if(buttons[5].click(mouseX,mouseY)){ 
+    exit(); 
+    return;
+  }
+}
+void keyPressed() {
+  //// Handle keys. ////
+  if (key == 'q') exit();
+  if (key == 'r') reset();
+  if (key == 'u') up();
+  if (key == 'd') down();
+}
+void up() {
+    z = -z;
+    if (mY>100) mY = mY-50;
+}
+void down() {
+    z = -z;
+    if (mY<height-100) mY = mY + 50;
+}
+
+//// OBJECTS ////
+class Button {
+  float x,y;
+  float w=80, h=30;
+  String name;
+  float r=255, g=255, b=0;
+  // CONSTRUCTOR //
+  Button( float x, float y, String s ) {
+    this.x=x;
+    this.y=y;
+    this.name=s;
+  }
+  // METHODS //
+  // Draw the button.
+  void show() {
+    stroke(0);
+    fill(r,g,b);
+    rect(x,y,w,h );
+    fill(0);
+    text(name,x+10,y+h*2/3);
+  }
+  // Return true if inside button rect.
+  boolean click(float xx,float yy) {
+    if(xx<x)   return false;
+    if(xx>x+w) return false;
+    if(yy<y)   return false;
+    if(yy>y+h) return false;
+    return true;
+  }      
+}//classBro//
