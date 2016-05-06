@@ -29,7 +29,7 @@ String news="";
 int count2;
 boolean debug=false;
 int n;
-float horizon= height/2;
+float horizon= height/3;
 float broX, broY;
 float goldX, goldY;
 float gooberX, gooberY;
@@ -59,7 +59,7 @@ void setup() {
   goldY=  height/2;
   broX=width;
   broY=height/3;
-  gooberX=730;
+  gooberX=30;
   gooberY=  random( horizon, height-100);
   count=0;
   makebuttons();
@@ -70,7 +70,7 @@ void makebuttons() {
   float x=150, y=50;
   for (int j=0; j<numButtons; j++) {
     buttons[j]= new Button(x, y, buttonNames[j]);
-    y+=50;
+    y+=35;
   }
   buttons[2].r=0;
   buttons[2].b=255;
@@ -135,9 +135,16 @@ void scene(){
 
   
   fill(0, 255, 0);                         //BRIGHT GREEN LAWN
-  rect(width/2, horizon*2, width, height*(2/3));
+  rect(0, horizon, width, height*(2/3));
   
-  
+  fill(0);
+  text( "Project Two-final rough draft", width/3, 10 );
+  text( "Conga line.", width/3, 20 );
+  text( "Press 'r', and 'q' on the keyboard to reset and quit, respectively.", 15, height*9/10 );
+  text( "Brian witte / Intro to java", 15, height-15 );
+    if (score != 0) {
+  text( "Score:  "+score, width*2/3, 50 );
+    }
   /*fill( 125, 0, 0 );
   rect( 250, 250, 100, 50 );               // Red-ish house
   triangle( 250, 175, 100, 100, 150, 175);
@@ -322,14 +329,14 @@ void dog() {
 
 }
 */
-//void scoring() {
+void scoring() {
 }
 
 void reset() {
   broX=(width/4);
   broY=(height*(3/4));
-  gooberX=(width*(3/4));
-  gooberY=(height*(3/4));
+  gooberX=width*(3/4);
+  gooberY=height*(3/4);
   newFlock();
   
 }
@@ -348,7 +355,12 @@ void newFlock() {                         // Create a new flock of birds
   w=random(10,30);
   h=random(10,30);
 }
-
+void help() {
+  text("press 'u' to make the monkey move up the ladder", width/w, horizon);
+  text("press 'd' to make the monkey move down the ladder", width/w, horizon+20);
+  text("press 'r' to make the birds fly, reset goober and bro.", width/w, horizon);
+  text("press 'q' to stop watching this.", width/w, horizon);
+}
   //flocks of birds
 void flock(int pairs, float x, float y, float w, float h) {
   float u=  h;
@@ -370,17 +382,6 @@ void bird(float x, float y, float w, float h) {
   ellipse(birdX+16, birdY, 10, 10);                                          //// head
   textSize(12);
 }
-void help() {
-  fill(0);
-  text( "Project Two-final rough draft", width/3, 10 );
-  text( "Conga line.", width/3, 20 );
-  text( "Press 'r', and 'q' on the keyboard to reset and quit, respectively.", 15, height*9/10 );
-  text( "Brian witte / Intro to java", 15, height-15 );
-  if (score != 0) {
-    text( "Score:  "+score, width*2/3, 50 );
-  }
-}
-
 void mousePressed() {
   //--goldX=mouseX;
   //--goldY=mouseY; This doesnt belong here anymore or at least it isnt appropriate while clicking buttons that appear above the horizon
