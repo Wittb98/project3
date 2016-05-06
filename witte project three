@@ -1,0 +1,459 @@
+// Brian Witte
+// Project three
+
+
+////OLD////
+/*float broX, broY;
+float goldX, goldY;
+float gooberX, gooberY;
+float sunX=90, sunY=90;
+float cloudX=80, cloudY=80;
+float birdX, BridY=20;
+*/
+////NEW////
+/*Nugget gold;
+Hero bro;
+Monster goober;
+*/
+
+Button[] buttons;
+String buttonNames[]= {
+  "Up", "Down", "Flock", "Gold", "Reset", "Quit"
+};
+int numButtons= buttonNames.length;
+
+int score=0;
+String title= "Project 3: monkeying around";
+String author= "Brian Witte";
+String news="";
+int count2;
+boolean debug=false;
+int n;
+float horizon= height/3;
+float broX, broY;
+float goldX, goldY;
+float gooberX, gooberY;
+float sunX=90, sunY=90;
+float cloudX=80, cloudY=80;
+float birdX, birdY=20;
+
+int step;
+float helpX, helpY;
+int count=0;
+float Ladder;
+int pairs;
+
+float z=1;
+float mX=60, mY=600;
+float x;
+float w;
+float y= 100;
+float h=height/2;
+float broDX;
+
+void setup() {
+  size( 1000, 700);
+  horizon=  height/3;
+  sunY=  ((height/3)-1);
+  goldX= width/2;
+  goldY=  height/2;
+  broX=width;
+  broY=height/3;
+  gooberX=30;
+  gooberY=  random( horizon, height-100);
+  count=0;
+  makebuttons();
+}
+
+void makebuttons() {
+  buttons= new Button[numButtons];
+  float x=150, y=50;
+  for (int j=0; j<numButtons; j++) {
+    buttons[j]= new Button(x, y, buttonNames[j]);
+    y+=35;
+  }
+  buttons[2].r=0;
+  buttons[2].b=255;
+}
+
+void draw() {
+  if (key=='?') {
+    help();
+    return;
+  }
+  scene(); 
+  buttons();
+  //flock representing birds
+  flock(pairs, x, y, w, h);
+    x=x+w/2;
+  //clouds();
+  grass();
+  ladder();
+  monkey(mX, mY);
+  int when=300;
+  if (frameCount%when == 0) {
+    z=-z;
+    if (mY>100) {
+      mY=mY-50;
+    }
+  }
+  if (frameCount%when == 30) {
+    z=-z;
+    if (mY<height-100) {
+      mY=mY + 50;
+    }
+  }
+  if (frameCount%when == 50) {
+    z=-z;
+    if (mY >100) {
+      mY=mY-50;
+    }
+  }
+  if (frameCount%when ==45) {
+    z=-z;
+    if (mY< height-100) {
+      mY=mY+50;
+    }
+  }
+  hero();
+  monster();
+  gold();
+  //dog();
+}
+
+void scene(){
+  background( 150, 200, 250 );             // PALE Blue sky
+  
+  noStroke();
+  fill( 255, 255, 0 );  
+  ellipse( sunX, sunY, 60, 60 );           // Yellow-y sun
+  if( sunX>width) {
+    sunX=0;
+    sunY= random( 30, horizon-40);
+  }
+  sunX=sunX+2;                             //move that sun
+
+  
+  fill(0, 255, 0);                         //BRIGHT GREEN LAWN
+  rect(0, horizon, width, height*(2/3));
+  
+  fill(0);
+  text( "Project Two-final rough draft", width/3, 10 );
+  text( "Conga line.", width/3, 20 );
+  text( "Press 'r', and 'q' on the keyboard to reset and quit, respectively.", 15, height*9/10 );
+  text( "Brian witte / Intro to java", 15, height-15 );
+    if (score != 0) {
+  text( "Score:  "+score, width*2/3, 50 );
+    }
+  /*fill( 125, 0, 0 );
+  rect( 250, 250, 100, 50 );               // Red-ish house
+  triangle( 250, 175, 100, 100, 150, 175);
+  
+  fill(146, 111, 91);
+  rect(420, 200, 20, 60);                  //Crayola Beaver-Brown Tree trunk?
+  
+  fill(0, 255, 0);
+  ellipse(420, 150, 45, 90);               //Green Evergreen
+  
+  fill(146, 111, 91);
+  rect(520, 200, 40, 60);                  //Crayola Beaver-Brown Tree trunk?
+  
+  fill(0, 255, 0);
+  triangle(480, 140, 520, 40, 560, 140);
+  triangle(480, 150, 520, 50, 560, 150);
+  triangle(480, 160, 520, 60, 560, 160);
+  triangle(480, 170, 520, 70, 560, 170);
+  triangle(480, 180, 520, 80, 560, 180);
+  triangle(480, 190, 520, 90, 560, 190);
+  triangle(480, 200, 520, 100, 560, 200);  //Green Evergreen
+  
+  fill(146, 111, 91);
+  rect(320, 200, 40, 60);                  //Crayola Beaver-Brown Tree trunk?
+  
+  fill(0, 255, 0);
+  triangle(280, 140, 320, 40, 360, 140);
+  triangle(280, 150, 320, 50, 360, 150);
+  triangle(280, 160, 320, 60, 360, 160);
+  triangle(280, 170, 320, 70, 360, 170);
+  triangle(280, 180, 320, 80, 360, 180);
+  triangle(280, 190, 320, 90, 360, 190);
+  triangle(280, 200, 320, 100, 360, 200);  //Green Evergreen
+  */
+}
+//The all important buttons//
+void buttons() {
+  for(int j=0; j<buttonNames.length; j++) {
+    buttons[j].show();
+  }
+}
+//Grass//
+void grass() {
+  float wave= broDX>0?10:-10;
+  stroke(255,254,0);                  ////almost the same color as the sun
+  strokeWeight(5);
+  for(float x=100; x<width; x+=40) {
+    line(x,height,x+wave, height-40);
+  }
+  strokeWeight(2);
+}
+//The ladder for the monkey to play his games on//
+void ladder() {
+  stroke(20);
+  fill(146, 111, 91);              ////Crayola Beaver Brown Ladder
+  for(int i=0; i<14;i+=1) {
+    rect(20, i*50, 100, 10, 70);
+  }
+  for(int j=0; j<2; j++) {
+    rect(j*100, 0, 20, 1000, 80);
+  }
+}
+//The monkey we need to play games on our new ladder//
+void monkey(float mX, float mY) {
+  strokeWeight(5);
+  stroke(120,50,10);
+  line( mX, mY, mX-20*z, mY+100);
+  line( mX, mY, mX+20*z, mY+50);
+  line( mX, mY, mX+20*z, mY-100);
+  line( mX, mY, mX-20*z, mY-50);
+  fill(120,50,10);
+  noStroke();
+  ellipseMode(CENTER);
+  ellipse(mX, mY, 40, 80);
+  fill(146, 111, 91);
+  ellipse(mX, mY-40, 30, 30);
+}  
+
+//Our hero who is still chasing gold. GET A JOB!//
+void hero() {
+  broDX=  (goldX-broX)/30;
+  broX=  broX + (goldX-broX)/30;
+  broY=  broY + (goldY-broY)/30; 
+  if( dist(goldX, goldY, broX, broY)<25) {
+    score+=100;
+    goldX=random(width);
+    goldY=random( horizon, height);
+  }
+  stroke(0);                        //Body
+  fill(255,227,48);                 //Lego Yellow
+  rect(broX,broY,100,100);
+                                    
+  line(broX-30,broY+50,broX-30,broY+80);
+  line(broX+30,broY+50,broX+30,broY+80);//legs
+                                    
+  stroke(0);
+  fill(0);
+  rect(broX,broY+20,80,20);//mouth
+                                    
+  stroke(0);
+  fill(255,0,0);
+  rect(broX,broY+25,40,10);
+  stroke(0);
+  line(broX,broY+20,broX,broY+30);  //tongue
+                                    
+  stroke(0);
+  fill(255);
+  ellipse(broX,broY-20,30,20);      //eye
+  stroke(0);
+  fill(0);
+  ellipse(broX,broY-20,10,10);
+                                    
+  text("BRO!!!", broX-25, broY+45);  //name
+}
+
+//Goober rears his ugly head again
+void monster() {                                   
+  gooberX=  gooberX  +  (broX-gooberX) / 30;
+  gooberY=  gooberY  +  (broY-gooberY) / 80;       // Goober, our monster comes after our hero. Slowly closing in.
+  if ( dist(gooberX, gooberY, broX, broY) <20){        //BRO!!! gets the gold
+    text("-100!!!", 200, 50);
+    goldX= random(50, 550);
+    goldY= random(horizon+10, height-10);
+  }
+  stroke(0);                        //Body
+  fill(150);
+  rect(gooberX,gooberY,100,100);
+                                    //legs
+  line(gooberX-30,gooberY+50,gooberX-30,gooberY+80);
+  line(gooberX+30,gooberY+50,gooberX+30,gooberY+80);
+                                    //mouth
+  stroke(0);
+  fill(0);
+  rect(gooberX+50,gooberY+50,80,20);
+                                    //tongue
+  stroke(0);
+  fill(255,0,0);
+  rect(gooberX,gooberY+25,40,10);
+  stroke(0);
+  line(gooberX,gooberY+20,gooberX,gooberY+30);
+                                    //eye
+  stroke(0);
+  fill(255);
+  ellipse(gooberX,gooberY-20,30,20);
+  stroke(0);
+  fill(0);
+  ellipse(gooberX,gooberY-20,10,10);
+                                    //Name
+text("Goober!!!", gooberX-25, gooberY+45);
+}
+/*////Next we will draw the dog that follows our BRO!!!
+void dog() {
+  scoobyX=  scoobyX  +  (broX-scoobyX) / 50;
+  scoobyY=  scoobyY  +  (broY-scoobyY) / 50; //Scooby the dog follows BRO!!
+    
+  stroke(0);                                           //Body
+  fill(68, 50, 45);
+  rect(xScooby, yScooby, 100, 50);
+
+  triangle(xScooby-50, yScooby-25, xScooby-65, yScooby-25, xScooby-65, yScooby-45); //Tail
+
+  line(xScooby-30, yScooby+25, xScooby-30, yScooby+55);//legs
+  line(xScooby-27, yScooby+25, xScooby-27, yScooby+55);
+  line(xScooby+30, yScooby+25, xScooby+30, yScooby+55);
+  line(xScooby+27, yScooby+25, xScooby+27, yScooby+55);
+  
+  stroke(0);
+  fill(255);
+  rect(xScooby+40, yScooby+10, 20, 20);                 //Scooby's mouth
+  
+  fill(68, 50, 45);
+  rect(xScooby+60, yScooby-20, 20, 10);                 //Scooby's snout
+  
+  stroke(0);
+  fill(255);
+  ellipse(xScooby+20, yScooby-20, 30, 20);              //Eyeball
+  stroke(0);
+  fill(0);
+  ellipse(xScooby+20, yScooby-20, 10, 10);              //Pupil
+
+  text("Scooby!!", xScooby-25, yScooby+15);             //Name
+
+}
+*/
+void scoring() {
+}
+
+void reset() {
+  broX=(width/4);
+  broY=(height*(3/4));
+  gooberX=width*(3/4);
+  gooberY=height*(3/4);
+  newFlock();
+  
+}
+void gold() {
+  stroke(0);                                                
+  fill(255, 215, 0);
+  rect(goldX, goldY, 40, 20);
+  if(goldY<horizon) goldY=horizon+15;
+}
+//void clouds();
+
+void newFlock() {                         // Create a new flock of birds
+  pairs=  int( random(3, 5));
+  x=random(w/2);
+  y=random(40, height/4);
+  w=random(10,30);
+  h=random(10,30);
+}
+void help() {
+  text("press 'u' to make the monkey move up the ladder", width/w, horizon);
+  text("press 'd' to make the monkey move down the ladder", width/w, horizon+20);
+  text("press 'r' to make the birds fly, reset goober and bro.", width/w, horizon);
+  text("press 'q' to stop watching this.", width/w, horizon);
+}
+  //flocks of birds
+void flock(int pairs, float x, float y, float w, float h) {
+  float u=  h;
+  bird(x, y, w, h);
+  
+  
+  for (int loop=0; loop<pairs; loop++) {   //draw birds in pairs for the V.
+    x=  x-3*w;
+    u=  u+h/2;
+    bird(x, y-u, w, h); //up
+    bird(x, y+u, w, h); //down
+  }
+}
+
+void bird(float x, float y, float w, float h) {
+  fill(92, 185, 174);
+  ellipse(x, y, 30, 20);                                             //// body
+  triangle(x, y, x-w, y-h/2, x-w, y+h/2); //// wing
+  ellipse(birdX+16, birdY, 10, 10);                                          //// head
+  textSize(12);
+}
+void mousePressed() {
+  //--goldX=mouseX;
+  //--goldY=mouseY; This doesnt belong here anymore or at least it isnt appropriate while clicking buttons that appear above the horizon
+  
+  if(buttons[0].click(mouseX,mouseY)){ 
+    up(); 
+    return; 
+  }
+  if(buttons[1].click(mouseX,mouseY)){ 
+    down(); 
+    return; 
+  }
+  if(buttons[2].click(mouseX,mouseY)){ 
+    newFlock(); 
+    return; 
+  }
+  if(buttons[3].click(mouseX,mouseY)){ 
+    gold(); 
+    return; 
+  }
+  if(buttons[4].click(mouseX,mouseY)){ 
+    reset(); 
+    return; 
+  }
+  if(buttons[5].click(mouseX,mouseY)){ 
+    exit(); 
+    return;
+  }
+}
+void keyPressed() {
+  //// Handle keys. ////
+  if (key == 'q') exit();
+  if (key == 'r') reset();
+  if (key == 'u') up();
+  if (key == 'd') down();
+}
+void up() {
+    z = -z;
+    if (mY>100) mY = mY-50;
+}
+void down() {
+    z = -z;
+    if (mY<height-100) mY = mY + 50;
+}
+
+//// OBJECTS ////
+class Button {
+  float x,y;
+  float w=80, h=30;
+  String name;
+  float r=255, g=255, b=0;
+  // BUTTON CONSTRUCTOR //
+  Button( float x, float y, String s ) {
+    this.x=x;
+    this.y=y;
+    this.name=s;
+  }
+  // Method //
+  // Create the button on the screen.
+  void show() {
+    stroke(0);
+    fill(r,g,b);
+    rect(x,y,w,h );
+    fill(0);
+    text(name,x+10,y+h*2/3);
+  }
+  //T/F Boolean checking if you are inside of the boxed-button rect.
+  boolean click(float xx,float yy) {
+    if(xx<x)   return false;
+    if(xx>x+w) return false;
+    if(yy<y)   return false;
+    if(yy>y+h) return false;
+    return true;
+  }      
+}
